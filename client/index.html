@@ -8,6 +8,7 @@
     <script src="js/lib/dom.js"></script>
     <script src="../shared/TheHelpingHand.js"></script>
     <script src="js/TheHelpingHand/TheHelpingHand.Client.js"></script>
+    <script src="js/TheHelpingHand/TheHelpingHand.Game.js"></script>
 </head>
 <body>
 <div class="container-fluid">
@@ -16,9 +17,19 @@
 
         <div class="col-xs-6">
             The Helping hand
+            <a href="#top" onclick="TheHelpingHand.Game.getList();">Game</a>
         </div>
         <div class="col-xs-6">
             Welcome, <span id="client-name">Guest</span>
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-xs-12" id="content">
+
+
         </div>
 
     </div>

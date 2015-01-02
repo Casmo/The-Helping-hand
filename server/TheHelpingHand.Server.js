@@ -5,6 +5,13 @@ TheHelpingHand.Server = {
 
     clients: [],
 
+    games: [
+        {
+            id: 0,
+            name: 'dummy game'
+        }
+    ],
+
     start: function() {
 
         var server = http.createServer(function (request, response) {});
@@ -86,6 +93,18 @@ TheHelpingHand.Server = {
             return false;
         }
         switch (message.topic) {
+            case 'game':
+                if (message.data.type == 'list') {
+                    var dataJson = {
+                        topic: 'game',
+                        data: {
+                            type: 'list',
+                            games: this.games
+                        }
+                    };
+                    this.sendMessage(CLIENT_ID, dataJson);
+                }
+            break;
             default:
             console.log('Warning: Topic not implemented: ' + topic);
         }
@@ -94,14 +113,14 @@ TheHelpingHand.Server = {
     /**
      * Sends a message to a client
      * @param CLIENT_ID
-     * @param message object with the following objects
+     * @param dataJson object with the following objects
      * topic: the topic
      * data: { } multiple variables can be set here
      * @returns {boolean}
      */
-    sendMessage: function(CLIENT_ID, message) {
+    sendMessage: function(CLIENT_ID, dataJson) {
 
-        return this.clients[CLIENT_ID].connection.send(JSON.stringify(message));
+        return this.clients[CLIENT_ID].connection.send(JSON.stringify(dataJson));
 
     },
 

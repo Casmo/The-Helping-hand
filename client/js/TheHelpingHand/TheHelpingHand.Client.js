@@ -3,6 +3,11 @@ TheHelpingHand.Client = {
     socket: {},
 
     /**
+     * @param connected boolean if the client is connected to the server
+     */
+    connected: false,
+
+    /**
      * Current client information
      */
     client: {},
@@ -17,11 +22,14 @@ TheHelpingHand.Client = {
          CLOSED 3 The connection is closed or couldn't be opened.
          */
         if (this.socket != null && (this.socket.readyState == 2 || this.socket.readyState == 1)) {
+            this.connected = true;
             return true;
         }
         this.socket = new WebSocket("ws://"+ TheHelpingHand.settings.host +":" + TheHelpingHand.settings.port);
         this.socket.onmessage = function (event) {
             var data = JSON.parse(event.data);
+            console.log('Message received');
+            console.log(event.data);
             if (data.topic == null) {
                 return false;
             }
@@ -29,14 +37,22 @@ TheHelpingHand.Client = {
                 case 'identity':
                     TheHelpingHand.Client.setClient(data.data);
                 break;
+                case 'game':
+                    if (data.data.type == 'list') {
+                        TheHelpingHand.Game.list(data.data.games);
+                    }
+                break;
                 default:
                 console.warn('Topic not implemented: ' + data.topic);
             }
             return false;
         };
         this.socket.onopen = function (event) {};
-        this.socket.onclose = function(event) {};
+        this.socket.onclose = function(event) {
+            TheHelpingHand.Client.connected = true;
+        };
         this.socket.onerror = function(event) {};
+        this.connected = true;
 
     },
 
@@ -45,6 +61,7 @@ TheHelpingHand.Client = {
         if (this.socket != null) {
             this.socket.close();
         }
+        this.connected = true;
 
     },
 
