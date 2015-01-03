@@ -22,16 +22,17 @@ TheHelpingHand.Client = {
          CLOSED 3 The connection is closed or couldn't be opened.
          */
         if (this.socket != null && (this.socket.readyState == 2 || this.socket.readyState == 1)) {
-            this.connected = true;
             return true;
         }
         this.socket = new WebSocket("ws://"+ TheHelpingHand.settings.host +":" + TheHelpingHand.settings.port);
         this.socket.onmessage = function (event) {
             TheHelpingHand.Client.parseMessage(event.data);
         };
-        this.socket.onopen = function (event) {};
-        this.socket.onclose = function(event) {
+        this.socket.onopen = function (event) {
             TheHelpingHand.Client.connected = true;
+        };
+        this.socket.onclose = function(event) {
+            TheHelpingHand.Client.connected = false;
         };
         this.socket.onerror = function(event) {};
         this.connected = true;
