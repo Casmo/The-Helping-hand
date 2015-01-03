@@ -27,25 +27,7 @@ TheHelpingHand.Client = {
         }
         this.socket = new WebSocket("ws://"+ TheHelpingHand.settings.host +":" + TheHelpingHand.settings.port);
         this.socket.onmessage = function (event) {
-            var data = JSON.parse(event.data);
-            console.log('Message received');
-            console.log(event.data);
-            if (data.topic == null) {
-                return false;
-            }
-            switch (data.topic) {
-                case 'identity':
-                    TheHelpingHand.Client.setClient(data.data);
-                break;
-                case 'game':
-                    if (data.data.type == 'list') {
-                        TheHelpingHand.Game.list(data.data.games);
-                    }
-                break;
-                default:
-                console.warn('Topic not implemented: ' + data.topic);
-            }
-            return false;
+            TheHelpingHand.Client.parseMessage(event.data);
         };
         this.socket.onopen = function (event) {};
         this.socket.onclose = function(event) {
@@ -82,6 +64,35 @@ TheHelpingHand.Client = {
         }
 
         this.client = message;
+
+    },
+
+    /**
+     * parse a message received from the server.
+     * @param data object stringify json object
+     * @returns {boolean}
+     */
+    parseMessage: function (data) {
+
+        var data = JSON.parse(data);
+        console.log('Message received');
+        console.log(data);
+        if (data.topic == null) {
+            return false;
+        }
+        switch (data.topic) {
+            case 'identity':
+                TheHelpingHand.Client.setClient(data.data);
+                break;
+            case 'game':
+                if (data.data.type == 'list') {
+                    TheHelpingHand.Game.list(data.data.games);
+                }
+                break;
+            default:
+                console.warn('Topic not implemented: ' + data.topic);
+        }
+        return false;
 
     }
 
