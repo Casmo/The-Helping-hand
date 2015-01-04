@@ -1,6 +1,22 @@
 TheHelpingHand.Game = {
 
+    /**
+     * Join or create a game
+     * @param game_id
+     */
     join: function(game_id) {
+
+        if (game_id == null) {
+            game_id = '';
+        }
+        var jsonData = {
+            topic: 'game',
+            data: {
+                type: 'join',
+                id: game_id
+            }
+        };
+        TheHelpingHand.Client.socket.send(JSON.stringify(jsonData));
 
     },
 

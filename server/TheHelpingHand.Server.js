@@ -3,14 +3,37 @@ var http = require("http");
 
 TheHelpingHand.Server = {
 
-    clients: [],
+    clients: [
+        //{
+        //    connection: connection,
+        //    name: '',
+        //    connected: true,
+        //    gameId: 0,
+        //}
+    ],
 
-    games: [
+    /**
+     * List of avaialble scenes
+     */
+    availableScenes: [
         {
-            id: 0,
-            name: 'dummy game'
+            object: function() { return TheHelpingHand.SceneRestaurant(); }
         }
     ],
+
+    games: [
+        //{
+        //    id: 0,
+        //    name: 'dummy game',
+        //    scene: {},
+        //    players: [],
+        //}
+    ],
+
+    /**
+     * For creating a unique game number. Starts with 1 because zero will be a new game.
+     */
+    _gamesCount: 1,
 
     start: function() {
 
@@ -43,7 +66,8 @@ TheHelpingHand.Server = {
         var client = {
             connection: connection,
             name: 'Guest (' + (Object.keys(this.clients).length + 1) + ')',
-            connected: true
+            connected: true,
+            gameId: 0
         };
         if (this.clients[CLIENT_ID] != null) {
             for (var attr in this.clients[CLIENT_ID]) {
@@ -76,7 +100,29 @@ TheHelpingHand.Server = {
      */
     removeClient: function (CLIENT_ID) {
         console.log('Client disconnected: ' + CLIENT_ID);
+        this.disconnectPlayerFromGame(CLIENT_ID);
         this.clients[CLIENT_ID].connected = false;
+    },
+
+    disconnectPlayerFromGame: function(CLIENT_ID) {
+
+        // @todo might wanna do this with a timeout so the player can reconnect on time...?
+        if (this.clients[CLIENT_ID].gameId != 0 && this.games[this.clients[CLIENT_ID].gameId] != null) {
+            this.games[this.clients[CLIENT_ID].gameId].players[CLIENT_ID] = null;
+            // Loop through players and push them a message
+            var datajson = {
+                topic: 'game',
+                data: {
+                    type: 'playerLeft',
+                    CLIENT_ID: CLIENT_ID
+                }
+            };
+            for (var CLIENT_ID in this.games[this.clients[CLIENT_ID].gameId].players) {
+                this.sendMessage(CLIENT_ID, dataJson);
+            }
+        }
+        this.clients[CLIENT_ID].gameId = 0;
+
     },
 
     /**
@@ -104,6 +150,13 @@ TheHelpingHand.Server = {
                     };
                     this.sendMessage(CLIENT_ID, dataJson);
                 }
+                // Player joins a game
+                else if (message.data.type == 'join') {
+                    TheHelpingHand.Game.join(CLIENT_ID, message.data.id);
+                }
+            break;
+            // Let the player rename his name...
+            case 'identify':
             break;
             default:
             console.log('Warning: Topic not implemented: ' + topic);

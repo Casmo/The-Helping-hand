@@ -15,7 +15,6 @@ TheHelpingHand.Client = {
     connect: function() {
 
         /**
-         *
          CONNECTING 0 The connection is not yet open.
          OPEN 1 The connection is open and ready to communicate.
          CLOSING 2 The connection is in the process of closing.
@@ -65,6 +64,16 @@ TheHelpingHand.Client = {
         }
 
         this.client = message;
+
+    },
+
+    /**
+     * Removes the cookie and logs out the user
+     */
+    removeClient: function() {
+
+        document.cookie = "CLIENT_ID=; expires=Fri, 31 Dec 0000 23:59:59 GMT; path=/";
+        document.cookie = "name=; expires=Fri, 31 Dec 0000 23:59:59 GMT; path=/";
 
     },
 
