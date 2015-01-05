@@ -12,21 +12,12 @@ TheHelpingHand.Server = {
         //}
     ],
 
-    /**
-     * List of avaialble scenes
-     */
-    availableScenes: [
-        {
-            object: function() { return TheHelpingHand.SceneRestaurant(); }
-        }
-    ],
-
     games: [],
 //[
         //{
         //    id: this.gamesCount,
         //    name: 'dummy game',
-        //    Scene: {},
+        //    sceneIndex: 0, // See TheHelpingHand::availableScenes
         //    players: [],
         //}
   //  ],
@@ -112,7 +103,7 @@ TheHelpingHand.Server = {
     disconnectPlayerFromCurrentGame: function(CLIENT_ID) {
 
         // @todo might wanna do this with a timeout so the player can reconnect on time...?
-        var gameIndex = TheHelpingHand.Game.getGameById(this.clients[CLIENT_ID].gameId);
+        var gameIndex = TheHelpingHand.Game.getIndexGameById(this.clients[CLIENT_ID].gameId);
         if (gameIndex == -1) {
             return;
         }
@@ -127,7 +118,7 @@ TheHelpingHand.Server = {
         };
         if (this.games[gameIndex].players.length == 0) {
             // Game over. Delete it.
-            this.deleteGame(gameIndex);
+            this.deleteGame(this.games[gameIndex].id);
         }
         else {
             for (var PLAYER_CLIENT_ID in this.games[gameIndex].players) {
@@ -142,8 +133,9 @@ TheHelpingHand.Server = {
      * Deletes a game.
      * @param game_id
      */
-    deleteGame: function(gameIndex) {
+    deleteGame: function(game_id) {
 
+        var gameIndex = TheHelpingHand.Game.getIndexGameById(game_id);
         if (this.games[gameIndex] != null) {
             console.log('Delete game: ' + gameIndex);
             this.games.splice(gameIndex, 1);

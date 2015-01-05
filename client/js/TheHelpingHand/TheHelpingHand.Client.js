@@ -12,6 +12,13 @@ TheHelpingHand.Client = {
      */
     client: {},
 
+    /**
+     * Timers for interval, timeouts, etc
+     */
+    _timers: {
+        error: null
+    },
+
     connect: function() {
 
         /**
@@ -93,16 +100,42 @@ TheHelpingHand.Client = {
         switch (data.topic) {
             case 'identity':
                 TheHelpingHand.Client.setClient(data.data);
-                break;
+            break;
             case 'game':
                 if (data.data.type == 'list') {
                     TheHelpingHand.Game.list(data.data.games);
                 }
-                break;
+                else if (data.data.type == 'start') {
+                    TheHelpingHand.Game.start(data.data);
+                }
+            break;
+            case 'error':
+              this.displayError(data.data.message);
+            break;
             default:
                 console.warn('Topic not implemented: ' + data.topic);
         }
         return false;
+
+    },
+
+    displayError: function (message) {
+
+        if (this._timers.error != null) {
+            window.clearTimeout(this._timers.error);
+        }
+        $('#error').innerHTML += message;
+        $('#error').style.display = 'block';
+        this._timers.error = setTimeout(this.hideError, 2000);
+
+    },
+
+    hideError: function() {
+
+        this._timers.error = null;
+        $('#error').style.display = 'none';
+        $('#error').innerHTML = '';
+
 
     }
 

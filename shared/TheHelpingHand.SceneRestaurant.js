@@ -6,7 +6,13 @@ TheHelpingHand.SceneRestaurant = function() {
 
     this.name = 'Restaurant';
 
-    this.background = 'wood.png';
+    this.background = 'scene-restaurant-background.png';
+
+    this.availableSpells = [
+        {
+            object: function() { return new TheHelpingHand.SpellFoodFish(); }
+        }
+    ];
 
 };
 

@@ -9,18 +9,25 @@
     <script src="../shared/TheHelpingHand.js"></script>
     <script src="js/TheHelpingHand/TheHelpingHand.Client.js"></script>
     <script src="js/TheHelpingHand/TheHelpingHand.Game.js"></script>
+    <script src="../shared/TheHelpingHand.Scene.js"></script>
+    <script src="../shared/TheHelpingHand.SceneRestaurant.js"></script>
+    <script src="../shared/TheHelpingHand.Spell.js"></script>
+    <script src="../shared/TheHelpingHand.SpellFoodFish.js"></script>
 </head>
 <body>
 <div class="container-fluid">
 
-    <div class="row">
+    <div class="row top-buffer">
 
-        <div class="col-xs-6">
-            The Helping hand
-            <a href="#top" onclick="TheHelpingHand.Game.getList();">Game</a>
-        </div>
-        <div class="col-xs-6">
-            Welcome, <span id="client-name">Guest</span>
+        <div class="col-xs-12">
+
+            <div class="pull-right">
+                Welcome, <span id="client-name">Guest</span>
+            </div>
+            <ul class="nav nav-pills">
+                <li role="presentation"><a href="#">Home</a></li>
+                <li role="presentation"><a href="#games" onclick="TheHelpingHand.Game.getList();">List available games</a></li>
+            </ul>
         </div>
 
     </div>
@@ -35,6 +42,10 @@
     </div>
 
 </div>
+
+<div id="game"></div>
+
+<div id="error" class="alert alert-warning"></div>
 <script src="js/game.js"></script>
 </body>
 </html>

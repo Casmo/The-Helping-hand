@@ -1,0 +1,38 @@
+.top-buffer {
+    margin-top: 20px;
+}
+#game {
+    background-color: #000;
+    position: absolute;
+    display: none;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+#game #scene {
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+#game #ui {
+    position: absolute;
+    z-index: 10;
+    bottom: 10px;
+    left: 10px;
+}
+#game #ui img {
+    max-height: 64px;
+}
+#error {
+    position: absolute;
+    z-index: 101;
+    display: none;
+    bottom: 0;
+    right: 0;
+    margin: 10px;
+}

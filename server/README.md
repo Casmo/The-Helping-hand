@@ -79,6 +79,15 @@ Below examples for the server pushing data to the client
         }
     };
 
+### Initial for creating a game
+    var gameInfo = TheHelpingHand.Server.games[gameIndex];
+    gameInfo.Scene = null;
+    gameInfo.type = 'start';
+    var dataJson = {
+        topic: 'game',
+        data: gameInfo
+    };
+
 ### Send a list of games to the player
     var dataJson = {
         topic: 'game',

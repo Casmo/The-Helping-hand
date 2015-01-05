@@ -5,7 +5,7 @@ TheHelpingHand.Game = {
      * @param game_id
      * @returns {number}
      */
-    getGameById: function(game_id) {
+    getIndexGameById: function(game_id) {
 
         for (var i = 0; i < TheHelpingHand.Server.games.length; i++) {
             if (TheHelpingHand.Server.games[i].id == game_id) {
@@ -23,18 +23,19 @@ TheHelpingHand.Game = {
      */
     create: function(CLIENT_ID) {
 
-        var randomScene = Math.floor(Math.random() * TheHelpingHand.Server.availableScenes.length);
-        if (TheHelpingHand.Server.availableScenes[randomScene] == null) {
+        var randomScene = Math.floor(Math.random() * TheHelpingHand.availableScenes.length);
+        if (TheHelpingHand.availableScenes[randomScene] == null) {
             return -1;
         }
 
-        var Scene = new TheHelpingHand.Server.availableScenes[randomScene].object();
+        var Scene = new TheHelpingHand.availableScenes[randomScene].object();
         TheHelpingHand.Server.gamesCount++;
         var game_id = TheHelpingHand.Server.gamesCount;
         console.log(TheHelpingHand.Server.games);
         TheHelpingHand.Server.games.push({
             id: TheHelpingHand.Server.gamesCount,
             Scene: Scene,
+            sceneIndex: randomScene,
             name: TheHelpingHand.Server.clients[CLIENT_ID].name +"'s game",
             players: []
         });
@@ -48,8 +49,14 @@ TheHelpingHand.Game = {
         if (game_id == null) {
             game_id = '';
         }
+        var oldGameId = TheHelpingHand.Server.clients[CLIENT_ID].gameId;
+        if (game_id != '' && game_id == oldGameId) {
+            console.log('Player already in this game.');
+            return;
+        }
+        TheHelpingHand.Server.disconnectPlayerFromCurrentGame(CLIENT_ID);
 
-        var gameIndex = this.getGameById(game_id);
+        var gameIndex = this.getIndexGameById(game_id);
         if (gameIndex == -1) {
             // Create a game
             game_id = this.create(CLIENT_ID);
@@ -63,7 +70,7 @@ TheHelpingHand.Game = {
                 TheHelpingHand.Server.sendMessage(CLIENT_ID, dataJson);
                 return false;
             }
-            gameIndex = this.getGameById(game_id);
+            gameIndex = this.getIndexGameById(game_id);
         }
         var currentPlayer = {
             name: TheHelpingHand.Server.clients[CLIENT_ID].name,
@@ -71,7 +78,6 @@ TheHelpingHand.Game = {
         };
         console.log('Player: ' + CLIENT_ID + ' joined game: ' + game_id + ' with index: ' + gameIndex);
         TheHelpingHand.Server.games[gameIndex].players[CLIENT_ID] = currentPlayer;
-        TheHelpingHand.Server.disconnectPlayerFromCurrentGame(CLIENT_ID);
         TheHelpingHand.Server.clients[CLIENT_ID].gameId = game_id;
 
         var dataJson = {
@@ -84,6 +90,15 @@ TheHelpingHand.Game = {
         for (var PLAYER_CLIENT_ID in TheHelpingHand.Server.games[gameIndex].players) {
             TheHelpingHand.Server.sendMessage(PLAYER_CLIENT_ID, dataJson);
         }
+
+        var gameInfo = TheHelpingHand.Server.games[gameIndex];
+        gameInfo.Scene = null;
+        gameInfo.type = 'start';
+        var dataJson = {
+            topic: 'game',
+            data: gameInfo
+        };
+        TheHelpingHand.Server.sendMessage(CLIENT_ID, dataJson);
     }
 
 };

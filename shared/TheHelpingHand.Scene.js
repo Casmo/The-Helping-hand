@@ -23,7 +23,11 @@ TheHelpingHand.Scene = function() {
      * List of available spells for the player
      * @type {Array}
      */
-    this.availableSpells = [];
+    this.availableSpells = [
+//        {
+//            object: function() { return new TheHelpingHand.SpellFoodFish(); }
+//        }
+    ];
 
     /**
      * Spawned elements

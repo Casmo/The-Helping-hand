@@ -26,7 +26,9 @@ TheHelpingHand.Game = {
      */
     list: function(games) {
 
-        var html = '<a href="#join" onclick="TheHelpingHand.Game.join();" class="btn btn-primary">New game</a>';
+        var html = '<div class="top-buffer">';
+        html += '<a href="#join" onclick="TheHelpingHand.Game.join();" class="btn btn-primary">New game</a> ';
+        html += '<a href="#join" onclick="TheHelpingHand.Game.getList();" class="btn btn-default">Refresh</a>';
         html += '<table class="table table-striped">';
         html += '<thead>';
         html += '<tr>';
@@ -37,7 +39,7 @@ TheHelpingHand.Game = {
         html += '</thead>';
         html += '<tbody>';
         if (games.length == 0) {
-            html += '<tr><td colspan="3">No games available. <a href="#join" onclick="TheHelpingHand.Game.join();" class="btn btn-primary">New game</a></td></tr>';
+            html += '<tr><td colspan="3">No games available.</td></tr>';
         }
         else {
             console.log(games);
@@ -53,6 +55,7 @@ TheHelpingHand.Game = {
         }
         html += '</tbody>';
         html += '</table>';
+        html += '</div>';
         $('#content').innerHTML = html;
 
     },
@@ -69,6 +72,36 @@ TheHelpingHand.Game = {
             }
         };
         TheHelpingHand.Client.socket.send(JSON.stringify(jsonData));
+
+    },
+
+    /**
+     * Starts a game and create the scene!
+     * @param gameData object with game attributes. E.g.
+     * {
+     *      id: this.gamesCount,
+            name: 'dummy game',
+            sceneIndex: 0, // See TheHelpingHand::availableScenes
+            players: []
+     * }
+     */
+    start: function(gameData) {
+
+        var Scene = TheHelpingHand.availableScenes[gameData.sceneIndex].object();
+
+        console.log(Scene);
+
+        var html = '';
+        html += '<div id="scene" style="background-image: url(assets/images/'+ Scene.background +');">abc</div>';
+        html += '<div id="ui">';
+        for (var i = 0; i < Scene.availableSpells.length; i++) {
+            var spell = Scene.availableSpells[i].object();
+            console.log(spell);
+            html += '<img src="assets/icons/' + spell.icon +'" />';
+        }
+        html += '</div>';
+        $('#game').innerHTML = html;
+        $('#game').style.display = 'block';
 
     }
 
