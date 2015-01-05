@@ -11,3 +11,9 @@ TheHelpingHand.SceneRestaurant = function() {
 };
 
 TheHelpingHand.SceneRestaurant.prototype = Object.create( TheHelpingHand.Scene.prototype );
+
+TheHelpingHand.SceneRestaurant.prototype.update = function() {
+
+    TheHelpingHand.Scene.prototype.update.call(this);
+
+};

@@ -21,19 +21,20 @@ TheHelpingHand.Server = {
         }
     ],
 
-    games: [
+    games: [],
+//[
         //{
-        //    id: 0,
+        //    id: this.gamesCount,
         //    name: 'dummy game',
         //    Scene: {},
         //    players: [],
         //}
-    ],
+  //  ],
 
     /**
      * For creating a unique game number. Starts with 1 because zero will be a new game.
      */
-    _gamesCount: 1,
+    gamesCount: 0,
 
     start: function() {
 
@@ -100,29 +101,53 @@ TheHelpingHand.Server = {
      */
     removeClient: function (CLIENT_ID) {
         console.log('Client disconnected: ' + CLIENT_ID);
-        this.disconnectPlayerFromGame(CLIENT_ID);
+        this.disconnectPlayerFromCurrentGame(CLIENT_ID);
         this.clients[CLIENT_ID].connected = false;
     },
 
-    disconnectPlayerFromGame: function(CLIENT_ID) {
+    /**
+     * Disconnect a player from the game he/she is playing at the moment.
+     * @param CLIENT_ID
+     */
+    disconnectPlayerFromCurrentGame: function(CLIENT_ID) {
 
         // @todo might wanna do this with a timeout so the player can reconnect on time...?
-        if (this.clients[CLIENT_ID].gameId != 0 && this.games[this.clients[CLIENT_ID].gameId] != null) {
-            this.games[this.clients[CLIENT_ID].gameId].players[CLIENT_ID] = null;
-            // Loop through players and push them a message
-            var dataJson = {
-                topic: 'game',
-                data: {
-                    type: 'playerLeft',
-                    CLIENT_ID: CLIENT_ID
-                }
-            };
-            for (var CLIENT_ID in this.games[this.clients[CLIENT_ID].gameId].players) {
-                this.sendMessage(CLIENT_ID, dataJson);
+        var gameIndex = TheHelpingHand.Game.getGameById(this.clients[CLIENT_ID].gameId);
+        if (gameIndex == -1) {
+            return;
+        }
+        this.games[gameIndex].players[CLIENT_ID] = null;
+        // Loop through players and push them a message
+        var dataJson = {
+            topic: 'game',
+            data: {
+                type: 'playerLeft',
+                CLIENT_ID: CLIENT_ID
+            }
+        };
+        if (this.games[gameIndex].players.length == 0) {
+            // Game over. Delete it.
+            this.deleteGame(gameIndex);
+        }
+        else {
+            for (var PLAYER_CLIENT_ID in this.games[gameIndex].players) {
+                this.sendMessage(PLAYER_CLIENT_ID, dataJson);
             }
         }
         this.clients[CLIENT_ID].gameId = 0;
 
+    },
+
+    /**
+     * Deletes a game.
+     * @param game_id
+     */
+    deleteGame: function(gameIndex) {
+
+        if (this.games[gameIndex] != null) {
+            console.log('Delete game: ' + gameIndex);
+            this.games.splice(gameIndex, 1);
+        }
     },
 
     /**
@@ -154,9 +179,17 @@ TheHelpingHand.Server = {
                 else if (message.data.type == 'join') {
                     TheHelpingHand.Game.join(CLIENT_ID, message.data.id);
                 }
+                // Player leaves a game
+                else if (message.data.type == 'leave') {
+                    this.disconnectPlayerFromCurrentGame(CLIENT_ID);
+                }
             break;
             // Let the player rename his name...
             case 'identify':
+              if (message.data.name != null && message.data.name != '') {
+                  this.clients[CLIENT_ID].name = message.data.name;
+                  // @todo might wanna update the game where he is at...
+              }
             break;
             default:
             console.log('Warning: Topic not implemented: ' + topic);

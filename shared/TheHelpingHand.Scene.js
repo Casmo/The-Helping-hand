@@ -38,9 +38,7 @@ TheHelpingHand.Scene = function() {
 
 };
 
-TheHelpingHand.Scene.prototype.constructor = function() {
-
-};
+TheHelpingHand.Scene.prototype.constructor = TheHelpingHand.Scene;
 
 /**
  * Update function for rendering animations

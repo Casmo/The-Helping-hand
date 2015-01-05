@@ -34,6 +34,14 @@ Below examples for the client requesting or pusing data to the server
         }
     };
 
+### Player leaves a game
+    var dataJson = {
+        topic: 'game',
+        data: {
+            type: 'leave'
+        }
+    };
+
 ## Server pushing data to the client
 Below examples for the server pushing data to the client
 
@@ -59,6 +67,14 @@ Below examples for the server pushing data to the client
         topic: 'game',
         data: {
             type: 'playerLeft',
+            CLIENT_ID: 'abc-def-ghi'
+        }
+    };
+### Player joined a game
+    var dataJson = {
+        topic: 'game',
+        data: {
+            type: 'playerJoined',
             CLIENT_ID: 'abc-def-ghi'
         }
     };
