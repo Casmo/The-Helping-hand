@@ -25,7 +25,7 @@ TheHelpingHand.Server = {
         //{
         //    id: 0,
         //    name: 'dummy game',
-        //    scene: {},
+        //    Scene: {},
         //    players: [],
         //}
     ],
@@ -110,7 +110,7 @@ TheHelpingHand.Server = {
         if (this.clients[CLIENT_ID].gameId != 0 && this.games[this.clients[CLIENT_ID].gameId] != null) {
             this.games[this.clients[CLIENT_ID].gameId].players[CLIENT_ID] = null;
             // Loop through players and push them a message
-            var datajson = {
+            var dataJson = {
                 topic: 'game',
                 data: {
                     type: 'playerLeft',
