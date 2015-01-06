@@ -103,3 +103,17 @@ Below examples for the server pushing data to the client
            ]
         }
     };
+
+### Send an event to a player
+    var eventData = {
+        eventIndex: randomEvent,
+        amount: 1,
+        timeout: 5000,
+        start: Date.now(),
+        elementIndex: randomElement
+    };
+    currentElement.push(eventData);
+    var dataJson = {
+        topic: event,
+        data: eventData
+    };

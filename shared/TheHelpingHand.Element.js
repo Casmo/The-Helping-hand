@@ -14,10 +14,19 @@ TheHelpingHand.Element = function() {
     this.image = '';
 
     /**
-     * countered by spells
+     * Available events
      */
-    this.counteredBy = [
+    this.availableEvents = [
+//        {
+//            object: function() { return new TheHelpingHand.EventHunger(); }
+//        }
     ];
+
+    /**
+     * Active events
+     * @type {Array}
+     */
+    this.events = [];
 
 };
 

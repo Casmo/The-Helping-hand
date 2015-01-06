@@ -4,11 +4,13 @@
  */
 TheHelpingHand.SceneRestaurant = function() {
 
+    TheHelpingHand.Scene.call( this );
+
     this.name = 'Restaurant';
 
     this.grid = {
-        x: 5,
-        y: 5,
+        x: 8,
+        y: 8,
         w: 128,
         h: 64,
         image: 'scene-restaurant-tile.png'
@@ -39,6 +41,14 @@ TheHelpingHand.SceneRestaurant = function() {
         {
             object: function() { return new TheHelpingHand.ElementTable(); },
             grid: 9
+        },
+        {
+            object: function() { return new TheHelpingHand.ElementTable(); },
+            grid: 15
+        },
+        {
+            object: function() { return new TheHelpingHand.ElementTable(); },
+            grid: 18
         }
     ];
 

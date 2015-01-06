@@ -1,5 +1,6 @@
 var WebSocketServer = require("websocket").server;
 var http = require("http");
+var _ = require('underscore');
 
 TheHelpingHand.Server = {
 
@@ -215,8 +216,13 @@ TheHelpingHand.Server = {
 
     },
 
+    /**
+     * Clear private variables from the json data object.
+     * @todo fix that arrays will be arrays and not objects.
+     * @param dataJson
+     * @returns {{}}
+     */
     clearPrivateData: function(dataJson) {
-
         var dataToSend = {};
         for (var key in dataJson) {
             if (key.indexOf('_') != 0) {
@@ -229,7 +235,6 @@ TheHelpingHand.Server = {
             }
         }
         return dataToSend;
-
     },
 
     /**

@@ -3,9 +3,23 @@
  */
 TheHelpingHand.ElementTable = function() {
 
-    this.name = 'Restaurant';
+    TheHelpingHand.Element.call( this );
+
+    this.name = 'Table';
 
     this.image = 'element-table-empty.png';
+
+    /**
+     * Available events
+     */
+    this.availableEvents = [
+        {
+            object: function() { return new TheHelpingHand.EventHunger(); }
+        },
+        {
+            object: function() { return new TheHelpingHand.EventThirsty(); }
+        }
+    ];
 
 };
 

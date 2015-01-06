@@ -3,10 +3,14 @@
  */
 TheHelpingHand.SpellFoodWine = function() {
 
+    TheHelpingHand.Spell.call( this );
+
     /**
      * @var name string the name of the scene. e.g. "Restaurant"
      */
     this.name = 'Serve wine';
+
+    this.type = 'drink';
 
     /**
      * @var icon

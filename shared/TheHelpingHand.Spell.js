@@ -8,6 +8,8 @@ TheHelpingHand.Spell = function() {
      */
     this.name = '';
 
+    this.type = ''; // Type of the spell. Can be used in the event countered list.
+
     /**
      * @var background string the background image of the scene. E.g. restaurant.jpg
      */

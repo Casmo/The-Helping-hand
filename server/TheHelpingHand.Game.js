@@ -31,29 +31,71 @@ TheHelpingHand.Game = {
         var Scene = TheHelpingHand.availableScenes[randomScene].object();
         TheHelpingHand.Server.gamesCount++;
         var game_id = TheHelpingHand.Server.gamesCount;
-        console.log(TheHelpingHand.Server.games);
+
+        var _elements = [];
+        for (var i = 0; i < Scene.elements.length; i++) {
+            _elements.push(Scene.elements[i].object());
+        }
         // Private functions and objects will not be sent to the clients!
         TheHelpingHand.Server.games.push({
             id: TheHelpingHand.Server.gamesCount,
             sceneIndex: randomScene,
             name: TheHelpingHand.Server.clients[CLIENT_ID].name +"'s game",
             players: [],
-            elements: [],
+            _elements: _elements,
             _Scene: Scene,
             _timers: [],
             _update: function() {
                 var gameIndex = TheHelpingHand.Game.getIndexGameById(this.id);
                 TheHelpingHand.Server.games[gameIndex]._timers = [];
                 // 1. Spawn stuff @todo do something here with the amount of players...
+                // Get a random element
+                var randomElement = Math.floor(Math.random() * TheHelpingHand.Server.games[gameIndex]._elements.length);
+                if (TheHelpingHand.Server.games[gameIndex]._elements[randomElement] != null) {
+                    var currentElement = TheHelpingHand.Server.games[gameIndex]._elements[randomElement];
+                    console.log('-------------------');
+                    console.log(TheHelpingHand.Server.games[gameIndex]);
+                    console.log('-------------------');
+                    if (currentElement.events.length == 0) {
+                        var randomEvent = Math.floor(Math.random() * currentElement.availableEvents.length);
+                        var eventData = {
+                            eventIndex: randomEvent,
+                            amount: 1,
+                            timeout: 5000,
+                            start: Date.now(),
+                            elementIndex: randomElement
+                        };
+                        currentElement.events.push(eventData);
+                        var dataJson = {
+                            topic: 'event',
+                            data: eventData
+                        };
+                        TheHelpingHand.Game.sendMessageToAllPlayers(gameIndex, dataJson);
+                        // @todo remove event etc
+                    }
+                }
 
                 // 2. Refresh tick
-                var nextUpdate = setTimeout(function() { TheHelpingHand.Server.games[gameIndex]._update(); } , ((Math.random() * 1) + 1) * 1000);
+                var nextUpdate = setTimeout(function() { TheHelpingHand.Server.games[gameIndex]._update(); } , ((Math.random() * 2) + 1) * 1000);
                 TheHelpingHand.Server.games[gameIndex]._timers.push(nextUpdate);
             }
         });
         setTimeout(TheHelpingHand.Server.games[TheHelpingHand.Server.games.length-1]._update(), 1000);
         console.log('Game created with id: ' + game_id);
         return game_id;
+
+    },
+
+    /**
+     * Sends a socket message to all clients
+     * @param gameIndex
+     * @param jsonData
+     */
+    sendMessageToAllPlayers: function(gameIndex, dataJson) {
+
+        for (var i = 0; i < TheHelpingHand.Server.games[gameIndex].players.length; i++) {
+            TheHelpingHand.Server.sendMessage(TheHelpingHand.Server.games[gameIndex].players[i].CLIENT_ID, dataJson);
+        }
 
     },
 
@@ -107,9 +149,7 @@ TheHelpingHand.Game = {
                 CLIENT_ID: CLIENT_ID
             }
         };
-        for (var i = 0; i < TheHelpingHand.Server.games[gameIndex].players.length; i++) {
-            TheHelpingHand.Server.sendMessage(TheHelpingHand.Server.games[gameIndex].players[i].CLIENT_ID, dataJson);
-        }
+        this.sendMessageToAllPlayers(gameIndex, dataJson);
 
         var gameInfo = TheHelpingHand.Server.games[gameIndex];
         var dataJson = {
