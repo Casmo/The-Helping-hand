@@ -61,8 +61,9 @@ TheHelpingHand.Game = {
                         topic: 'element',
                         data: element
                     };
-                    for (var PLAYER_CLIENT_ID in TheHelpingHand.Server.games[gameIndex].players) {
-                        TheHelpingHand.Server.sendMessage(PLAYER_CLIENT_ID, dataJson);
+
+                    for (var i = 0; i < TheHelpingHand.Server.games[gameIndex].players.length; i++) {
+                        TheHelpingHand.Server.sendMessage(TheHelpingHand.Server.games[gameIndex].players[i].CLIENT_ID, dataJson);
                     }
                 }
                 // 2. Refresh tick
@@ -70,7 +71,6 @@ TheHelpingHand.Game = {
                 TheHelpingHand.Server.games[gameIndex]._timers.push(nextUpdate);
             }
         });
-        console.log(TheHelpingHand.Server.games);
         setTimeout(TheHelpingHand.Server.games[TheHelpingHand.Server.games.length-1]._update(), 1000);
         console.log('Game created with id: ' + game_id);
         return game_id;
@@ -112,11 +112,12 @@ TheHelpingHand.Game = {
             gameIndex = this.getIndexGameById(game_id);
         }
         var currentPlayer = {
+            CLIENT_ID: CLIENT_ID,
             name: TheHelpingHand.Server.clients[CLIENT_ID].name,
             score: 0
         };
         console.log('Player: ' + CLIENT_ID + ' joined game: ' + game_id + ' with index: ' + gameIndex);
-        TheHelpingHand.Server.games[gameIndex].players[CLIENT_ID] = currentPlayer;
+        TheHelpingHand.Server.games[gameIndex].players.push(currentPlayer);
         TheHelpingHand.Server.clients[CLIENT_ID].gameId = game_id;
 
         var dataJson = {
@@ -126,8 +127,8 @@ TheHelpingHand.Game = {
                 CLIENT_ID: CLIENT_ID
             }
         };
-        for (var PLAYER_CLIENT_ID in TheHelpingHand.Server.games[gameIndex].players) {
-            TheHelpingHand.Server.sendMessage(PLAYER_CLIENT_ID, dataJson);
+        for (var i = 0; i < TheHelpingHand.Server.games[gameIndex].players.length; i++) {
+            TheHelpingHand.Server.sendMessage(TheHelpingHand.Server.games[gameIndex].players[i].CLIENT_ID, dataJson);
         }
 
         var gameInfo = TheHelpingHand.Server.games[gameIndex];

@@ -67,7 +67,7 @@ TheHelpingHand.Game = {
             html += '<tr>';
             html += '<td>'+ game.name +'</td>';
             html += '<td>'+ game.players.length +'</td>';
-            html += '<td><a href="#join" onclick="TheHelpingHand.Game.join('+ game.id +');" class="btn btn-default">Join</a></td>';
+            html += '<td><a href="#join" onclick="TheHelpingHand.Game.join('+ game.id +');" class="btn btn-primary">Join</a></td>';
             html += '</tr>';
         }
         html += '</tbody>';

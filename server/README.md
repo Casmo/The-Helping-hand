@@ -34,11 +34,11 @@ Below examples for the client requesting or pusing data to the server
         }
     };
 
-### Player leaves a game
-    var dataJson = {
+### Quit game Client -> server
+    var jsonData = {
         topic: 'game',
         data: {
-            type: 'leave'
+            type: 'quit'
         }
     };
 

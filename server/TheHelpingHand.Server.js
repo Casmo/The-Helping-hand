@@ -109,7 +109,11 @@ TheHelpingHand.Server = {
         if (gameIndex == -1) {
             return;
         }
-        this.games[gameIndex].players[CLIENT_ID] = null;
+        for (var i = 0; i < this.games[gameIndex].players.length; i++) {
+            if (this.games[gameIndex].players[i].CLIENT_ID == CLIENT_ID) {
+                this.games[gameIndex].players.splice(i);
+            }
+        }
         // Loop through players and push them a message
         var dataJson = {
             topic: 'game',
@@ -118,13 +122,14 @@ TheHelpingHand.Server = {
                 CLIENT_ID: CLIENT_ID
             }
         };
-        if (Object.keys(this.games[gameIndex].players).length <= 1) {
+        console.log(this.games[gameIndex]);
+        if (this.games[gameIndex].players.length <= 0) {
             // Game over. Delete it.
             this.deleteGame(this.games[gameIndex].id);
         }
         else {
-            for (var PLAYER_CLIENT_ID in this.games[gameIndex].players) {
-                this.sendMessage(PLAYER_CLIENT_ID, dataJson);
+            for (var i = 0; i < this.games[gameIndex].players.length; i++) {
+                this.sendMessage(this.games[gameIndex].players[i].CLIENT_ID, dataJson);
             }
         }
         this.clients[CLIENT_ID].gameId = 0;
@@ -156,8 +161,8 @@ TheHelpingHand.Server = {
      */
     receiveMessage: function (CLIENT_ID, message) {
         message = message.utf8Data;
+        console.log('Message received from client: ' + CLIENT_ID + ', message: ' + message);
         message = JSON.parse(message);
-        console.log('Message received from client: ' + CLIENT_ID);
         if (message.topic == null) {
             return false;
         }
@@ -179,7 +184,7 @@ TheHelpingHand.Server = {
                     TheHelpingHand.Game.join(CLIENT_ID, message.data.id);
                 }
                 // Player leaves a game
-                else if (message.data.type == 'leave') {
+                else if (message.data.type == 'quit') {
                     this.disconnectPlayerFromCurrentGame(CLIENT_ID);
                 }
             break;

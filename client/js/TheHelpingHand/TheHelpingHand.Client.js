@@ -63,6 +63,13 @@ TheHelpingHand.Client = {
      */
     quitGame: function() {
 
+        var jsonData = {
+            topic: 'game',
+            data: {
+                type: 'quit'
+            }
+        };
+        TheHelpingHand.Client.socket.send(JSON.stringify(jsonData));
         TheHelpingHand.Game.currentScene = {};
         $('#game').style.display = 'none';
         $('#game').innerHTML = '';
