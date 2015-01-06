@@ -74,12 +74,6 @@ TheHelpingHand.Game = {
         html += '</table>';
         html += '</div>';
         $('#content').innerHTML = html;
-        for (var index in games.elements) {
-            if (!games.elements.hasOwnProperty(index)) {
-                continue;
-            }
-            this.addElement(games.element[index]);
-        }
 
     },
 
@@ -113,7 +107,10 @@ TheHelpingHand.Game = {
         this.currentScene = TheHelpingHand.availableScenes[gameData.sceneIndex].object();
 
         var html = '';
-        html += '<div id="scene" style="background-image: url(assets/images/'+ this.currentScene.background +');"></div>';
+        html += '<div id="scene" style="background-image: url(assets/images/'+ this.currentScene.background +');">';
+
+
+        html +'</div>';
         html += '<div class="ui ui-top">';
         html += '<span id="stat-score"></span>';
         html += '<a href="#exit" onclick="TheHelpingHand.Client.quitGame();" class="btn btn-primary">Exit</a>';
@@ -127,6 +124,14 @@ TheHelpingHand.Game = {
         }
         html += '</div>';
         $('#game').innerHTML = html;
+
+        for (var index in gameData.elements) {
+            if (!gameData.elements.hasOwnProperty(index)) {
+                continue;
+            }
+            this.addElement(gameData.elements[index]);
+        }
+
         $('#game').style.display = 'block';
 
     },
@@ -155,6 +160,7 @@ TheHelpingHand.Game = {
         // 3. Active this spell and make it available for casting
         $('#spell-'+ spellIndex).className = 'spell spell-active';
         this.activeSpell = spellIndex;
+        return true;
 
     },
 
@@ -184,10 +190,11 @@ TheHelpingHand.Game = {
 
         var topPos = 10 + Math.round(Math.random() * (window.innerHeight - 20));
         var leftPos = 10 + Math.round(Math.random() * (window.innerWidth - 20));
+        var zIndex = topPos;
 
         var html = '';
-        html += '<img class="element" id="element-'+ elementData.id +'" src="assets/images/'+ element.image +'" style="top: '+ topPos +'px;left: '+ leftPos +'px;" />';
-        $('#game').innerHTML += html;
+        html += '<img class="element" id="element-'+ elementData.id +'" src="assets/images/'+ element.image +'" style="top: '+ topPos +'px;left: '+ leftPos +'px;z-index: '+ zIndex +'" />';
+        $('#scene').innerHTML += html;
 
     }
 
