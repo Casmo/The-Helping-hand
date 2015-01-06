@@ -53,9 +53,6 @@ TheHelpingHand.Game = {
                 var randomElement = Math.floor(Math.random() * TheHelpingHand.Server.games[gameIndex]._elements.length);
                 if (TheHelpingHand.Server.games[gameIndex]._elements[randomElement] != null) {
                     var currentElement = TheHelpingHand.Server.games[gameIndex]._elements[randomElement];
-                    console.log('-------------------');
-                    console.log(TheHelpingHand.Server.games[gameIndex]);
-                    console.log('-------------------');
                     if (currentElement.events.length == 0) {
                         var randomEvent = Math.floor(Math.random() * currentElement.availableEvents.length);
                         var eventData = {

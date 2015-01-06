@@ -145,7 +145,9 @@ TheHelpingHand.Game = {
             var element = this.currentScene.elements[i].object();
             var left = gridPositions[this.currentScene.elements[i].grid].left;
             var top = gridPositions[this.currentScene.elements[i].grid].top;
-            html += '<img class="element" id="element-'+ i +'" style="z-index: '+ (i + 1) +'; left: '+ left +'px; top: '+ top +'px;" src="assets/images/'+ element.image +'" />';
+            html += '<div class="element" id="element-'+ i +'" style="z-index: '+ (i + 1) +'; left: '+ left +'px; top: '+ top +'px;">';
+            html += '<img src="assets/images/'+ element.image +'" />';
+            html += '</div>';
 
         }
 
@@ -193,6 +195,25 @@ TheHelpingHand.Game = {
         $('#spell-'+ spellIndex).className = 'spell spell-active';
         this.activeSpell = spellIndex;
         return true;
+
+    },
+
+    /**
+     * Add an event to a element.
+     * @param eventData
+     * amount
+     * elementIndex
+     * eventIndex
+     * start date.Now();
+     * timeout in ms
+     */
+    addEvent: function(eventData) {
+
+        var Element = this.currentScene.elements[eventData.elementIndex].object();
+        var Event = Element.availableEvents[eventData.eventIndex].object();
+        var html = '';
+        html += '<img class="event" src="assets/icons/'+ Event.icon +'">';
+        $('#element-' + eventData.elementIndex).innerHTML += html;
 
     },
 
