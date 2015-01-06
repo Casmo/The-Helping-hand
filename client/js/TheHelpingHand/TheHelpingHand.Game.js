@@ -31,8 +31,8 @@ TheHelpingHand.Game = {
         }
         var jsonData = {
             topic: 'game',
+            type: 'join',
             data: {
-                type: 'join',
                 id: game_id
             }
         };
@@ -84,8 +84,8 @@ TheHelpingHand.Game = {
         }
         var jsonData = {
             topic: 'game',
+            type: 'list',
             data: {
-                type: 'list'
             }
         };
         TheHelpingHand.Client.socket.send(JSON.stringify(jsonData));

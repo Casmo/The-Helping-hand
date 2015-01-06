@@ -56,9 +56,9 @@ TheHelpingHand.Game = {
                         completed: false
                     };
                     TheHelpingHand.Server.games[gameIndex].elements.push(element);
-                    element.type = 'add';
                     var dataJson = {
                         topic: 'element',
+                        type: 'add',
                         data: element
                     };
 
@@ -122,8 +122,8 @@ TheHelpingHand.Game = {
 
         var dataJson = {
             topic: 'game',
+            type: 'playerJoined',
             data: {
-                type: 'playerJoined',
                 CLIENT_ID: CLIENT_ID
             }
         };
@@ -132,9 +132,9 @@ TheHelpingHand.Game = {
         }
 
         var gameInfo = TheHelpingHand.Server.games[gameIndex];
-        gameInfo.type = 'start';
         var dataJson = {
             topic: 'game',
+            type: 'start',
             data: gameInfo
         };
         TheHelpingHand.Server.sendMessage(CLIENT_ID, dataJson);

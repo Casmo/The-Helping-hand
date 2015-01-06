@@ -6,8 +6,8 @@ The following data can be send back and forth to the server
 ### Basic usage
     var jsonData = {
       topic: 'topic',
+      type: 'x',
       data: {
-        type: 'x',
         var2: 'y',
         id: 6
       }
@@ -20,16 +20,16 @@ Below examples for the client requesting or pusing data to the server
 ### Get game list Client -> Server
     var jsonData = {
         topic: 'game',
+        type: 'list',
         data: {
-            type: 'list'
         }
     };
 
 ### Join game (id: 1) Client -> Server
     var jsonData = {
         topic: 'game',
+        type: 'join',
         data: {
-            type: 'join',
             id: 1
         }
     };
@@ -37,8 +37,8 @@ Below examples for the client requesting or pusing data to the server
 ### Quit game Client -> server
     var jsonData = {
         topic: 'game',
+        type: 'quit',
         data: {
-            type: 'quit'
         }
     };
 
@@ -65,16 +65,16 @@ Below examples for the server pushing data to the client
 ### Player left a game
     var dataJson = {
         topic: 'game',
+        type: 'playerLeft',
         data: {
-            type: 'playerLeft',
             CLIENT_ID: 'abc-def-ghi'
         }
     };
 ### Player joined a game
     var dataJson = {
         topic: 'game',
+        type: 'playerJoined',
         data: {
-            type: 'playerJoined',
             CLIENT_ID: 'abc-def-ghi'
         }
     };
@@ -83,16 +83,16 @@ Below examples for the server pushing data to the client
     var gameInfo = TheHelpingHand.Server.games[gameIndex];
     gameInfo.Scene = null;
     gameInfo.type = 'start';
+    topic: 'game',
     var dataJson = {
-        topic: 'game',
         data: gameInfo
     };
 
 ### Send a list of games to the player
     var dataJson = {
         topic: 'game',
+        type: 'list',
         data: {
-            type: 'list',
             games: [
                {
                    id: 0,
@@ -114,8 +114,8 @@ Below examples for the server pushing data to the client
         completed: false
     };
     TheHelpingHand.Server.games[gameIndex].elements.push(element);
-    element.topic = 'add';
     var dataJson = {
-        type: 'element',
+        topic: 'element',
+        type: 'add',
         data: element
     };

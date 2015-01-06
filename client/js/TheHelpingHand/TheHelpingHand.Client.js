@@ -65,8 +65,8 @@ TheHelpingHand.Client = {
 
         var jsonData = {
             topic: 'game',
+            type: 'quit',
             data: {
-                type: 'quit'
             }
         };
         TheHelpingHand.Client.socket.send(JSON.stringify(jsonData));
@@ -124,15 +124,15 @@ TheHelpingHand.Client = {
                 TheHelpingHand.Client.setClient(data.data);
             break;
             case 'game':
-                if (data.data.type == 'list') {
+                if (data.type == 'list') {
                     TheHelpingHand.Game.list(data.data.games);
                 }
-                else if (data.data.type == 'start') {
+                else if (data.type == 'start') {
                     TheHelpingHand.Game.start(data.data);
                 }
             break;
             case 'element':
-                if (data.data.type == 'add') {
+                if (data.type == 'add') {
                     TheHelpingHand.Game.addElement(data.data);
                 }
                 break;

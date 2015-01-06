@@ -117,8 +117,8 @@ TheHelpingHand.Server = {
         // Loop through players and push them a message
         var dataJson = {
             topic: 'game',
+            type: 'playerLeft',
             data: {
-                type: 'playerLeft',
                 CLIENT_ID: CLIENT_ID
             }
         };
@@ -168,11 +168,11 @@ TheHelpingHand.Server = {
         }
         switch (message.topic) {
             case 'game':
-                if (message.data.type == 'list') {
+                if (message.type == 'list') {
                     var dataJson = {
                         topic: 'game',
+                        type: 'list',
                         data: {
-                            type: 'list',
                             games: this.games
                         }
                     };
@@ -180,11 +180,11 @@ TheHelpingHand.Server = {
                     this.sendMessage(CLIENT_ID, dataJson);
                 }
                 // Player joins a game
-                else if (message.data.type == 'join') {
+                else if (message.type == 'join') {
                     TheHelpingHand.Game.join(CLIENT_ID, message.data.id);
                 }
                 // Player leaves a game
-                else if (message.data.type == 'quit') {
+                else if (message.type == 'quit') {
                     this.disconnectPlayerFromCurrentGame(CLIENT_ID);
                 }
             break;
