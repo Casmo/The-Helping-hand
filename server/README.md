@@ -103,3 +103,19 @@ Below examples for the server pushing data to the client
            ]
         }
     };
+
+### Add element to the game
+    var element = {
+        id: 0,
+        elementIndex: randomElement,
+        amount: Math.round(TheHelpingHand.Server.games[gameIndex].players *.6),
+        timeout: 5000,
+        start: Date.now(),
+        completed: false
+    };
+    TheHelpingHand.Server.games[gameIndex].elements.push(element);
+    element.topic = 'add';
+    var dataJson = {
+        type: 'element',
+        data: element
+    };

@@ -19,6 +19,8 @@ TheHelpingHand.Server = {
         //    name: 'dummy game',
         //    sceneIndex: 0, // See TheHelpingHand::availableScenes
         //    players: [],
+        //    _timers: [], // list of timers such as interval and timeouts
+        //    update: function() { } // The update function for interacting with the game
         //}
   //  ],
 
@@ -31,7 +33,7 @@ TheHelpingHand.Server = {
 
         var server = http.createServer(function (request, response) {});
         server.listen(TheHelpingHand.settings.port, function () {});
-        console.log('Server running on port: ' + TheHelpingHand.settings.port);
+        console.log('Server running on '+ TheHelpingHand.settings.host +':' + TheHelpingHand.settings.port);
 
         var wsServer = new WebSocketServer({
             httpServer: server
@@ -116,7 +118,7 @@ TheHelpingHand.Server = {
                 CLIENT_ID: CLIENT_ID
             }
         };
-        if (this.games[gameIndex].players.length == 0) {
+        if (Object.keys(this.games[gameIndex].players).length <= 1) {
             // Game over. Delete it.
             this.deleteGame(this.games[gameIndex].id);
         }
@@ -138,6 +140,11 @@ TheHelpingHand.Server = {
         var gameIndex = TheHelpingHand.Game.getIndexGameById(game_id);
         if (this.games[gameIndex] != null) {
             console.log('Delete game: ' + gameIndex);
+            if (this.games[gameIndex]._timers != null) {
+                for (var i = 0; i < this.games[gameIndex]._timers.length; i++) {
+                    clearTimeout(this.games[gameIndex]._timers[i]);
+                }
+            }
             this.games.splice(gameIndex, 1);
         }
     },
@@ -151,7 +158,6 @@ TheHelpingHand.Server = {
         message = message.utf8Data;
         message = JSON.parse(message);
         console.log('Message received from client: ' + CLIENT_ID);
-        console.log(message);
         if (message.topic == null) {
             return false;
         }
@@ -165,6 +171,7 @@ TheHelpingHand.Server = {
                             games: this.games
                         }
                     };
+                    console.log(dataJson);
                     this.sendMessage(CLIENT_ID, dataJson);
                 }
                 // Player joins a game
@@ -198,7 +205,25 @@ TheHelpingHand.Server = {
      */
     sendMessage: function(CLIENT_ID, dataJson) {
 
-        return this.clients[CLIENT_ID].connection.send(JSON.stringify(dataJson));
+        var dataToSend = this.clearPrivateData(dataJson);
+        return this.clients[CLIENT_ID].connection.send(JSON.stringify(dataToSend));
+
+    },
+
+    clearPrivateData: function(dataJson) {
+
+        var dataToSend = {};
+        for (var key in dataJson) {
+            if (key.indexOf('_') != 0) {
+                if (typeof dataJson[key] == 'object' || typeof dataJson[key] == 'array') {
+                    dataToSend[key] = this.clearPrivateData(dataJson[key]);
+                }
+                else {
+                    dataToSend[key] = dataJson[key];
+                }
+            }
+        }
+        return dataToSend;
 
     },
 

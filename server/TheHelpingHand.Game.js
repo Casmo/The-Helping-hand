@@ -28,22 +28,61 @@ TheHelpingHand.Game = {
             return -1;
         }
 
-        var Scene = new TheHelpingHand.availableScenes[randomScene].object();
+        var Scene = TheHelpingHand.availableScenes[randomScene].object();
         TheHelpingHand.Server.gamesCount++;
         var game_id = TheHelpingHand.Server.gamesCount;
         console.log(TheHelpingHand.Server.games);
+        // Private functions and objects will not be sent to the clients!
         TheHelpingHand.Server.games.push({
             id: TheHelpingHand.Server.gamesCount,
-            Scene: Scene,
             sceneIndex: randomScene,
             name: TheHelpingHand.Server.clients[CLIENT_ID].name +"'s game",
-            players: []
+            players: [],
+            elements: [],
+            _Scene: Scene,
+            _timers: [],
+            _update: function() {
+                var gameIndex = TheHelpingHand.Game.getIndexGameById(this.id);
+                TheHelpingHand.Server.games[gameIndex]._timers = [];
+                // 1. Spawn stuff @todo do something here with the amount of players...
+                var randomElement = Math.floor(Math.random() * this._Scene.availableElements.length);
+                if (this._Scene.availableElements[randomElement] != null) {
+                    var element = {
+                        id: TheHelpingHand.Server.games[gameIndex].elements.length,
+                        elementIndex: randomElement,
+                        amount: Math.round(TheHelpingHand.Server.games[gameIndex].players *.6),
+                        timeout: 5000,
+                        start: Date.now(),
+                        completed: false
+                    };
+                    TheHelpingHand.Server.games[gameIndex].elements.push(element);
+                    element.type = 'add';
+                    var dataJson = {
+                        topic: 'element',
+                        data: element
+                    };
+                    for (var PLAYER_CLIENT_ID in TheHelpingHand.Server.games[gameIndex].players) {
+                        TheHelpingHand.Server.sendMessage(PLAYER_CLIENT_ID, dataJson);
+                    }
+                }
+                // 2. Refresh tick
+                var nextUpdate = setTimeout(function() { TheHelpingHand.Server.games[gameIndex]._update(); } , ((Math.random() * 1) + 1) * 1000);
+                TheHelpingHand.Server.games[gameIndex]._timers.push(nextUpdate);
+            }
         });
+        console.log(TheHelpingHand.Server.games);
+        setTimeout(TheHelpingHand.Server.games[TheHelpingHand.Server.games.length-1]._update(), 1000);
         console.log('Game created with id: ' + game_id);
         return game_id;
 
     },
 
+    /**
+     * Add a client to the game and send the initial json data back to the client
+     * @param CLIENT_ID
+     * @param game_id
+     * @returns {boolean}
+     */
     join: function(CLIENT_ID, game_id) {
 
         if (game_id == null) {
@@ -52,7 +91,7 @@ TheHelpingHand.Game = {
         var oldGameId = TheHelpingHand.Server.clients[CLIENT_ID].gameId;
         if (game_id != '' && game_id == oldGameId) {
             console.log('Player already in this game.');
-            return;
+            return false;
         }
         TheHelpingHand.Server.disconnectPlayerFromCurrentGame(CLIENT_ID);
 
@@ -92,13 +131,13 @@ TheHelpingHand.Game = {
         }
 
         var gameInfo = TheHelpingHand.Server.games[gameIndex];
-        gameInfo.Scene = null;
         gameInfo.type = 'start';
         var dataJson = {
             topic: 'game',
             data: gameInfo
         };
         TheHelpingHand.Server.sendMessage(CLIENT_ID, dataJson);
+        return true;
     }
 
 };

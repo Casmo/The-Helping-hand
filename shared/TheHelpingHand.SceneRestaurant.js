@@ -11,6 +11,15 @@ TheHelpingHand.SceneRestaurant = function() {
     this.availableSpells = [
         {
             object: function() { return new TheHelpingHand.SpellFoodFish(); }
+        },
+        {
+            object: function() { return new TheHelpingHand.SpellFoodWine(); }
+        }
+    ];
+
+    this.availableElements = [
+        {
+            object: function() { return new TheHelpingHand.ElementTable(); }
         }
     ];
 

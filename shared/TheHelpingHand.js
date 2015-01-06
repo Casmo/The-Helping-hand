@@ -2,7 +2,7 @@ var TheHelpingHand = TheHelpingHand || {
 
     settings: {
 
-        host: 'localhost',
+        host: '192.168.1.11',
         port: 1337
 
     },

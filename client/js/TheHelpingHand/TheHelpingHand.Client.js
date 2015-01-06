@@ -1,3 +1,7 @@
+/**
+ * Parsing and receiving data from and to the server.
+ * @type {{socket: {}, connected: boolean, client: {}, _timers: {error: null}, connect: connect, disconnect: disconnect, setClient: setClient, removeClient: removeClient, parseMessage: parseMessage, displayError: displayError, hideError: hideError}}
+ */
 TheHelpingHand.Client = {
 
     socket: {},
@@ -55,6 +59,16 @@ TheHelpingHand.Client = {
     },
 
     /**
+     * Some logic after player quits the game. Remove stuff
+     */
+    quitGame: function() {
+
+        TheHelpingHand.Game.currentScene = {};
+        $('#game').style.display = 'none';
+        $('#game').innerHTML = '';
+    },
+
+    /**
      * Sets the current client information
      * @param message object
      * @returns {boolean}
@@ -95,6 +109,7 @@ TheHelpingHand.Client = {
         console.log('Message received');
         console.log(data);
         if (data.topic == null) {
+            console.warn('Topic not set');
             return false;
         }
         switch (data.topic) {
@@ -109,6 +124,11 @@ TheHelpingHand.Client = {
                     TheHelpingHand.Game.start(data.data);
                 }
             break;
+            case 'element':
+                if (data.data.type == 'add') {
+                    TheHelpingHand.Game.addElement(data.data);
+                }
+                break;
             case 'error':
               this.displayError(data.data.message);
             break;
