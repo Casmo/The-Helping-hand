@@ -45,27 +45,7 @@ TheHelpingHand.Game = {
                 var gameIndex = TheHelpingHand.Game.getIndexGameById(this.id);
                 TheHelpingHand.Server.games[gameIndex]._timers = [];
                 // 1. Spawn stuff @todo do something here with the amount of players...
-                var randomElement = Math.floor(Math.random() * this._Scene.availableElements.length);
-                if (this._Scene.availableElements[randomElement] != null) {
-                    var element = {
-                        id: TheHelpingHand.Server.games[gameIndex].elements.length,
-                        elementIndex: randomElement,
-                        amount: Math.round(TheHelpingHand.Server.games[gameIndex].players *.6),
-                        timeout: 5000,
-                        start: Date.now(),
-                        completed: false
-                    };
-                    TheHelpingHand.Server.games[gameIndex].elements.push(element);
-                    var dataJson = {
-                        topic: 'element',
-                        type: 'add',
-                        data: element
-                    };
 
-                    for (var i = 0; i < TheHelpingHand.Server.games[gameIndex].players.length; i++) {
-                        TheHelpingHand.Server.sendMessage(TheHelpingHand.Server.games[gameIndex].players[i].CLIENT_ID, dataJson);
-                    }
-                }
                 // 2. Refresh tick
                 var nextUpdate = setTimeout(function() { TheHelpingHand.Server.games[gameIndex]._update(); } , ((Math.random() * 1) + 1) * 1000);
                 TheHelpingHand.Server.games[gameIndex]._timers.push(nextUpdate);

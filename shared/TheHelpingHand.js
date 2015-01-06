@@ -12,7 +12,8 @@ var TheHelpingHand = TheHelpingHand || {
      */
     availableScenes: [
         {
-            object: function() { return new TheHelpingHand.SceneRestaurant(); }
+            object: function() { return new TheHelpingHand.SceneRestaurant(); },
+            name: 'Restaurant'
         }
     ]
 

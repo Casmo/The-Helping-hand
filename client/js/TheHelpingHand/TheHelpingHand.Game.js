@@ -55,6 +55,7 @@ TheHelpingHand.Game = {
         html += '<tr>';
         html += '<th>Game</th>';
         html += '<th>Players</th>';
+        html += '<th>Scenario</th>';
         html += '<th>Options</th>';
         html += '</tr>';
         html += '</thead>';
@@ -67,6 +68,7 @@ TheHelpingHand.Game = {
             html += '<tr>';
             html += '<td>'+ game.name +'</td>';
             html += '<td>'+ game.players.length +'</td>';
+            html += '<td>'+ TheHelpingHand.availableScenes[game.sceneIndex].name +'</td>';
             html += '<td><a href="#join" onclick="TheHelpingHand.Game.join('+ game.id +');" class="btn btn-primary">Join</a></td>';
             html += '</tr>';
         }
