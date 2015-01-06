@@ -105,10 +105,47 @@ TheHelpingHand.Game = {
     start: function(gameData) {
 
         this.currentScene = TheHelpingHand.availableScenes[gameData.sceneIndex].object();
-
+        this.grid = {
+            x: 5,
+            y: 5,
+            w: 128,
+            h: 64,
+            image: 'scene-restaurant-tile.png'
+        };
         var html = '';
-        html += '<div id="scene" style="background-image: url(assets/images/'+ this.currentScene.background +');">';
+        html += '<div id="scene">';
 
+        // Create grid
+        var gridPositions = [];
+        var grid = this.currentScene.grid;
+        var startTop = 0;
+        var startLeft = 0;
+        var index = 0;
+        var marginTop = grid.h / 2;
+        for (var x = 0; x < grid.x; x++) {
+            startTop = (x * grid.h / 2) + marginTop;
+            startLeft = (grid.x * (grid.w / 2)) - (x * (grid.w / 2));
+            for (var y = 0; y < grid.y; y++) {
+                var left = startLeft + (y * grid.w / 2);
+                var top = startTop + (y * grid.h / 2);
+                gridPositions[index] = {
+                    left: left,
+                    top: top
+                };
+                var zIndex = 1;//(grid.x * grid.y) - index;
+                html += '<div class="tile" id="tile-'+ index +'" style="width: '+ this.currentScene.grid.w +'px;height: '+ this.currentScene.grid.h +'px;left: '+ left +'px; top: '+ top +'px;background-image: url(assets/images/'+ this.currentScene.grid.image +');z-index: '+ zIndex +'">';
+                html += '</div>';
+                index++;
+            }
+        }
+
+        for (var i = 0; i < this.currentScene.elements.length; i++) {
+            var element = this.currentScene.elements[i].object();
+            var left = gridPositions[this.currentScene.elements[i].grid].left;
+            var top = gridPositions[this.currentScene.elements[i].grid].top;
+            html += '<img class="element" id="element-'+ i +'" style="z-index: '+ (i + 1) +'; left: '+ left +'px; top: '+ top +'px;" src="assets/images/'+ element.image +'" />';
+
+        }
 
         html +'</div>';
         html += '<div class="ui ui-top">';
@@ -124,13 +161,6 @@ TheHelpingHand.Game = {
         }
         html += '</div>';
         $('#game').innerHTML = html;
-
-        for (var index in gameData.elements) {
-            if (!gameData.elements.hasOwnProperty(index)) {
-                continue;
-            }
-            this.addElement(gameData.elements[index]);
-        }
 
         $('#game').style.display = 'block';
 
@@ -168,33 +198,6 @@ TheHelpingHand.Game = {
      * Cast the current active spell
      */
     castSpell: function() {
-
-    },
-
-    /**
-     * Add a element to the scene
-     * @param elementData object with data:
-     var element = {
-        id: 0,
-        elementIndex: randomElement,
-        amount: 2,
-        timeout: 5000,
-        start: Date.now(),
-        completed: false
-    };
-     */
-    addElement: function(elementData) {
-
-        var element = this.currentScene.availableElements[elementData.elementIndex].object();
-        console.log(element);
-
-        var topPos = 10 + Math.round(Math.random() * (window.innerHeight - 20));
-        var leftPos = 10 + Math.round(Math.random() * (window.innerWidth - 20));
-        var zIndex = topPos;
-
-        var html = '';
-        html += '<img class="element" id="element-'+ elementData.id +'" src="assets/images/'+ element.image +'" style="top: '+ topPos +'px;left: '+ leftPos +'px;z-index: '+ zIndex +'" />';
-        $('#scene').innerHTML += html;
 
     }
 

@@ -6,7 +6,13 @@ TheHelpingHand.SceneRestaurant = function() {
 
     this.name = 'Restaurant';
 
-    this.background = 'scene-restaurant-background.png';
+    this.grid = {
+        x: 5,
+        y: 5,
+        w: 128,
+        h: 64,
+        image: 'scene-restaurant-tile.png'
+    };
 
     this.availableSpells = [
         {
@@ -17,9 +23,22 @@ TheHelpingHand.SceneRestaurant = function() {
         }
     ];
 
-    this.availableElements = [
+    this.elements = [
         {
-            object: function() { return new TheHelpingHand.ElementTable(); }
+            object: function() { return new TheHelpingHand.ElementTable(); },
+            grid: 1
+        },
+        {
+            object: function() { return new TheHelpingHand.ElementTable(); },
+            grid: 4
+        },
+        {
+            object: function() { return new TheHelpingHand.ElementTable(); },
+            grid: 8
+        },
+        {
+            object: function() { return new TheHelpingHand.ElementTable(); },
+            grid: 9
         }
     ];
 

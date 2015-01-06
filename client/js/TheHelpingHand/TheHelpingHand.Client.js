@@ -131,11 +131,6 @@ TheHelpingHand.Client = {
                     TheHelpingHand.Game.start(data.data);
                 }
             break;
-            case 'element':
-                if (data.type == 'add') {
-                    TheHelpingHand.Game.addElement(data.data);
-                }
-                break;
             case 'error':
               this.displayError(data.data.message);
             break;

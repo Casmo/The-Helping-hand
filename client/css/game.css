@@ -13,12 +13,13 @@
     height: 100%;
 }
 #game #scene {
-    position: absolute;
+    position: relative;
     z-index: 1;
-    left: 0;
-    top: 0;
     width: 100%;
     height: 100%;
+}
+#game #scene .tile {
+    position: absolute;
 }
 #game .ui {
     position: absolute;
@@ -68,9 +69,7 @@
 }
 /* Spells & elements */
 .element {
-    cursor: pointer;
     position: absolute;
-    z-index: 2;
 }
 .spell {
     cursor: pointer;

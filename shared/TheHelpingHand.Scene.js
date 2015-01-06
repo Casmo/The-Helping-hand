@@ -10,14 +10,16 @@ TheHelpingHand.Scene = function() {
     this.name = '';
 
     /**
-     * @var background string the background image of the scene. E.g. restaurant.jpg
+     * Grid type and sizes
+     * @type {{x: number, y: number}}
      */
-    this.background = '';
-
-    /**
-     * List of available elements here. E.g. Chair, Cook, Waiter
-     */
-    this.availableElements = [];
+    this.grid = {
+        x: 5,
+        y: 5,
+        w: 128,
+        h: 64,
+        image: ''
+    };
 
     /**
      * List of available spells for the player
@@ -30,7 +32,7 @@ TheHelpingHand.Scene = function() {
     ];
 
     /**
-     * Spawned elements
+     * Spawned elements from the start. Each element might be updated with 'debuffs' that can be countered with the available spells
      */
     this.elements = [];
 
