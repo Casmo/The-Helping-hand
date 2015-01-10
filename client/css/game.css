@@ -72,11 +72,30 @@
     position: absolute;
 }
 .event {
+    cursor: pointer;
     position: absolute;
     left: 0;
     top: 0;
+}
+.event img {
     width: 32px;
     border-radius: 32px;
+}
+.event .amount {
+    display: inline-block;
+    position: absolute;
+    z-index: 10;
+    border-radius: 22px;
+    left: -11px;
+    top: -11px;
+    background-color: #fff;
+    border: 2px solid #000;
+    font-size: 12px;
+    line-height: 22px;
+    width: 22px;
+    height: 22px;
+    text-align: center;
+    color: #000;
 }
 .spell {
     cursor: pointer;

@@ -209,12 +209,20 @@ TheHelpingHand.Game = {
      */
     addEvent: function(eventData) {
 
-        console.log(eventData);
         if (eventData.timeout > 0) {
             var Element = this.currentScene.elements[eventData.elementIndex].object();
             var Event = Element.availableEvents[eventData.eventIndex].object();
-            var html = '';
-            html += '<img class="event" id="event-'+ eventData.elementIndex +'-'+ eventData.eventIndex +'" src="assets/icons/'+ Event.icon +'">';
+            var html = '<div class="event" id="event-'+ eventData.elementIndex +'-'+ eventData.eventIndex +'">';
+            html += '<span class="amount">';
+            if (eventData.amount > 0) {
+                html += eventData.amount;
+            }
+            else {
+                html += '<img src="assets/event-completed.png" />';
+            }
+            html += '</span>';
+            html += '<img src="assets/icons/'+ Event.icon +'" />';
+            html += '</div>';
             $('#element-' + eventData.elementIndex).innerHTML += html;
 
             setTimeout(function() {
