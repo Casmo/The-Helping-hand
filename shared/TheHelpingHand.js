@@ -2,7 +2,7 @@ var TheHelpingHand = TheHelpingHand || {
 
     settings: {
 
-        host: '192.168.1.11',
+        host: 'localhost',
         port: 1337
 
     },
@@ -18,3 +18,6 @@ var TheHelpingHand = TheHelpingHand || {
     ]
 
 };
+if (typeof window != 'undefined' && window.location != null && window.location.hostname != null) {
+    TheHelpingHand.settings.host = window.location.hostname;
+}

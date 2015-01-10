@@ -204,16 +204,26 @@ TheHelpingHand.Game = {
      * amount
      * elementIndex
      * eventIndex
-     * start date.Now();
+     * start date.Now().getTime;
      * timeout in ms
      */
     addEvent: function(eventData) {
 
-        var Element = this.currentScene.elements[eventData.elementIndex].object();
-        var Event = Element.availableEvents[eventData.eventIndex].object();
-        var html = '';
-        html += '<img class="event" src="assets/icons/'+ Event.icon +'">';
-        $('#element-' + eventData.elementIndex).innerHTML += html;
+        console.log(eventData);
+        if (eventData.timeout > 0) {
+            var Element = this.currentScene.elements[eventData.elementIndex].object();
+            var Event = Element.availableEvents[eventData.eventIndex].object();
+            var html = '';
+            html += '<img class="event" id="event-'+ eventData.elementIndex +'-'+ eventData.eventIndex +'" src="assets/icons/'+ Event.icon +'">';
+            $('#element-' + eventData.elementIndex).innerHTML += html;
+
+            setTimeout(function() {
+                if ($('#event-' + eventData.elementIndex +'-'+ eventData.eventIndex) != null) {
+                    $('#event-' + eventData.elementIndex +'-'+ eventData.eventIndex).remove();
+                } }, eventData.timeout);
+
+
+        }
 
     },
 

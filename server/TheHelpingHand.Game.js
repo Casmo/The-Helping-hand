@@ -47,37 +47,39 @@ TheHelpingHand.Game = {
             _timers: [],
             _update: function() {
                 var gameIndex = TheHelpingHand.Game.getIndexGameById(this.id);
-                TheHelpingHand.Server.games[gameIndex]._timers = [];
                 // 1. Spawn stuff @todo do something here with the amount of players...
                 // Get a random element
-                var randomElement = Math.floor(Math.random() * TheHelpingHand.Server.games[gameIndex]._elements.length);
-                if (TheHelpingHand.Server.games[gameIndex]._elements[randomElement] != null) {
-                    var currentElement = TheHelpingHand.Server.games[gameIndex]._elements[randomElement];
-                    if (currentElement.events.length == 0) {
-                        var randomEvent = Math.floor(Math.random() * currentElement.availableEvents.length);
-                        var eventData = {
-                            eventIndex: randomEvent,
-                            amount: 1,
-                            timeout: 5000,
-                            start: Date.now(),
-                            elementIndex: randomElement
-                        };
-                        currentElement.events.push(eventData);
-                        var dataJson = {
-                            topic: 'event',
-                            data: eventData
-                        };
-                        TheHelpingHand.Game.sendMessageToAllPlayers(gameIndex, dataJson);
-                        // @todo remove event etc
-                    }
-                }
+                var randomElement = Math.floor(Math.random() * this._elements.length);
+                if (this._elements[randomElement] != null) {
+                    var currentElement = this._elements[randomElement];
+                    var randomEvent = Math.floor(Math.random() * currentElement.availableEvents.length);
+                    var timeout = 5000;
+                    var eventData = {
+                        eventIndex: randomEvent,
+                        amount: Math.ceil(Math.random() * 3), // @todo do this with number of players * .6
+                        timeout: timeout,
+                        start: new Date().getTime(),
+                        elementIndex: randomElement
+                    };
+                    currentElement.events.push(eventData);
+                    var eventIndex = currentElement.events.length-1;
+                    var dataJson = {
+                        topic: 'event',
+                        data: eventData
+                    };
+                    TheHelpingHand.Game.sendMessageToAllPlayers(gameIndex, dataJson);
 
-                // 2. Refresh tick
-                var nextUpdate = setTimeout(function() { TheHelpingHand.Server.games[gameIndex]._update(); } , ((Math.random() * 2) + 1) * 1000);
-                TheHelpingHand.Server.games[gameIndex]._timers.push(nextUpdate);
+                    // remove the event
+                    var timeoutEvent = setTimeout(function() { console.log('Remove event: ' + eventIndex); TheHelpingHand.Server.games[gameIndex]._elements[randomElement].events.splice(eventIndex, 1) }, timeout);
+                    TheHelpingHand.Server.games[gameIndex]._timers.push(timeoutEvent);
+
+                    var nextUpdate = setTimeout(function() { TheHelpingHand.Server.games[gameIndex]._update() }, 1500);
+                    TheHelpingHand.Server.games[gameIndex]._timers.push(nextUpdate);
+                }
             }
         });
-        setTimeout(TheHelpingHand.Server.games[TheHelpingHand.Server.games.length-1]._update(), 1000);
+        var nextUpdate = setTimeout(function() { TheHelpingHand.Server.games[TheHelpingHand.Server.games.length-1]._update() }, 7500);
+        TheHelpingHand.Server.games[TheHelpingHand.Server.games.length-1]._timers.push(nextUpdate);
         console.log('Game created with id: ' + game_id);
         return game_id;
 
@@ -155,6 +157,19 @@ TheHelpingHand.Game = {
             data: gameInfo
         };
         TheHelpingHand.Server.sendMessage(CLIENT_ID, dataJson);
+
+        // Get the current events and push it to the player
+        for (var i = 0; i < gameInfo._elements.length; i++) {
+            for (var j = 0; j < gameInfo._elements[i].events.length; j++) {
+                var eventData = gameInfo._elements[i].events[j];
+                eventData.timeout = eventData.timeout - (new Date().getTime() - eventData.start);
+                var dataJson = {
+                    topic: 'event',
+                    data: eventData
+                };
+                TheHelpingHand.Server.sendMessage(CLIENT_ID, dataJson);
+            }
+        }
         return true;
     }
 

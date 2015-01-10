@@ -36,6 +36,18 @@ TheHelpingHand.SceneRestaurant = function() {
         },
         {
             object: function() { return new TheHelpingHand.ElementTable(); },
+            grid: 5
+        },
+        {
+            object: function() { return new TheHelpingHand.ElementTable(); },
+            grid: 6
+        },
+        {
+            object: function() { return new TheHelpingHand.ElementTable(); },
+            grid: 7
+        },
+        {
+            object: function() { return new TheHelpingHand.ElementTable(); },
             grid: 8
         },
         {
@@ -44,11 +56,27 @@ TheHelpingHand.SceneRestaurant = function() {
         },
         {
             object: function() { return new TheHelpingHand.ElementTable(); },
-            grid: 15
+            grid: 10
         },
         {
             object: function() { return new TheHelpingHand.ElementTable(); },
-            grid: 18
+            grid: 11
+        },
+        {
+            object: function() { return new TheHelpingHand.ElementTable(); },
+            grid: 12
+        },
+        {
+            object: function() { return new TheHelpingHand.ElementTable(); },
+            grid: 13
+        },
+        {
+            object: function() { return new TheHelpingHand.ElementTable(); },
+            grid: 14
+        },
+        {
+            object: function() { return new TheHelpingHand.ElementTable(); },
+            grid: 15
         }
     ];
 
