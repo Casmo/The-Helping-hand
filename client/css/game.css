@@ -97,6 +97,10 @@
     text-align: center;
     color: #000;
 }
+.event .amount img {
+    width: 16px;
+    height: 16px;
+}
 .spell {
     cursor: pointer;
     margin-right: 10px;

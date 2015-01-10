@@ -47,19 +47,23 @@ TheHelpingHand.Game = {
             _timers: [],
             _update: function() {
                 var gameIndex = TheHelpingHand.Game.getIndexGameById(this.id);
-                // 1. Spawn stuff @todo do something here with the amount of players...
+                // 1. Spawn stuff
                 // Get a random element
                 var randomElement = Math.floor(Math.random() * this._elements.length);
                 if (this._elements[randomElement] != null) {
                     var currentElement = this._elements[randomElement];
                     var randomEvent = Math.floor(Math.random() * currentElement.availableEvents.length);
-                    var timeout = 5000;
+                    var event = currentElement.availableEvents[randomEvent].object();
+                    var counteredBy = event.counteredBy;
+                    var timeout = 12000;
+                    var players = this.players.length;
                     var eventData = {
                         eventIndex: randomEvent,
-                        amount: Math.ceil(Math.random() * 3), // @todo do this with number of players * .6
+                        amount: Math.ceil(Math.random() * (players *.6)),
                         timeout: timeout,
                         start: new Date().getTime(),
-                        elementIndex: randomElement
+                        elementIndex: randomElement,
+                        counteredBy: counteredBy
                     };
                     currentElement.events.push(eventData);
                     var eventIndex = currentElement.events.length-1;
@@ -70,19 +74,100 @@ TheHelpingHand.Game = {
                     TheHelpingHand.Game.sendMessageToAllPlayers(gameIndex, dataJson);
 
                     // remove the event
-                    var timeoutEvent = setTimeout(function() { console.log('Remove event: ' + eventIndex); TheHelpingHand.Server.games[gameIndex]._elements[randomElement].events.splice(eventIndex, 1) }, timeout);
+                    var timeoutEvent = setTimeout(function() { TheHelpingHand.Server.games[gameIndex]._elements[randomElement].events.splice(eventIndex, 1) }, timeout);
                     TheHelpingHand.Server.games[gameIndex]._timers.push(timeoutEvent);
 
-                    var nextUpdate = setTimeout(function() { TheHelpingHand.Server.games[gameIndex]._update() }, 1500);
+                    var nextUpdate = setTimeout(function() { TheHelpingHand.Server.games[gameIndex]._update() }, 8000);
                     TheHelpingHand.Server.games[gameIndex]._timers.push(nextUpdate);
                 }
             }
         });
-        var nextUpdate = setTimeout(function() { TheHelpingHand.Server.games[TheHelpingHand.Server.games.length-1]._update() }, 7500);
+        var nextUpdate = setTimeout(function() { TheHelpingHand.Server.games[TheHelpingHand.Server.games.length-1]._update() }, 3500);
         TheHelpingHand.Server.games[TheHelpingHand.Server.games.length-1]._timers.push(nextUpdate);
         console.log('Game created with id: ' + game_id);
         return game_id;
 
+    },
+
+    castSpell: function (CLIENT_ID, elementIndex, eventIndex, spellIndex) {
+
+        var gameIndex = this.getIndexGameById(TheHelpingHand.Server.clients[CLIENT_ID].gameId);
+        if (gameIndex > -1) {
+            if (TheHelpingHand.Server.games[gameIndex]._elements[elementIndex] == null) {
+                return false;
+            }
+            if (TheHelpingHand.Server.games[gameIndex]._elements[elementIndex].events[eventIndex] == null) {
+                return false;
+            }
+            if (TheHelpingHand.Server.games[gameIndex]._Scene.availableSpells[spellIndex] == null) {
+                var dataJson = {
+                    topic: 'spell',
+                    type: 'update',
+                    data: {
+                        elementIndex: elementIndex,
+                        eventIndex: eventIndex,
+                        amount: TheHelpingHand.Server.games[gameIndex]._elements[elementIndex].events[eventIndex].amount
+                    }
+                };
+                TheHelpingHand.Server.sendMessage(CLIENT_ID, dataJson);
+                return false;
+            }
+            var spell = TheHelpingHand.Server.games[gameIndex]._Scene.availableSpells[spellIndex].object();
+            var spellType = spell.type;
+            if (!this._inArray(spellType, TheHelpingHand.Server.games[gameIndex]._elements[elementIndex].events[eventIndex].counteredBy)) {
+                var dataJson = {
+                    topic: 'spell',
+                    type: 'update',
+                    data: {
+                        elementIndex: elementIndex,
+                        eventIndex: eventIndex,
+                        amount: TheHelpingHand.Server.games[gameIndex]._elements[elementIndex].events[eventIndex].amount
+                    }
+                };
+                TheHelpingHand.Server.sendMessage(CLIENT_ID, dataJson);
+                return false;
+            }
+            TheHelpingHand.Server.games[gameIndex]._elements[elementIndex].events[eventIndex].amount--;
+            var dataJson = {
+                topic: 'spell',
+                type: 'update',
+                data: {
+                    elementIndex: elementIndex,
+                    eventIndex: eventIndex,
+                    amount: TheHelpingHand.Server.games[gameIndex]._elements[elementIndex].events[eventIndex].amount
+                }
+            };
+            TheHelpingHand.Game.sendMessageToAllPlayers(gameIndex, dataJson);
+
+            var score = -1;
+            for (var i = 0; i < TheHelpingHand.Server.games[gameIndex].players.length; i++) {
+                if (TheHelpingHand.Server.games[gameIndex].players[i].CLIENT_ID == CLIENT_ID) {
+                    TheHelpingHand.Server.games[gameIndex].players[i].score += 10;
+                    score = TheHelpingHand.Server.games[gameIndex].players[i].score;
+                }
+            }
+            if (score > 0) {
+                var dataJson = {
+                    topic: 'score',
+                    type: 'update',
+                    data: {
+                        CLIENT_ID: CLIENT_ID,
+                        score: score
+                    }
+                };
+                TheHelpingHand.Game.sendMessageToAllPlayers(gameIndex, dataJson);
+            }
+
+        }
+    },
+
+
+    _inArray: function(needle, haystack) {
+        var length = haystack.length;
+        for(var i = 0; i < length; i++) {
+            if(haystack[i] == needle) return true;
+        }
+        return false;
     },
 
     /**
@@ -141,14 +226,6 @@ TheHelpingHand.Game = {
         TheHelpingHand.Server.games[gameIndex].players.push(currentPlayer);
         TheHelpingHand.Server.clients[CLIENT_ID].gameId = game_id;
 
-        var dataJson = {
-            topic: 'game',
-            type: 'playerJoined',
-            data: {
-                CLIENT_ID: CLIENT_ID
-            }
-        };
-        this.sendMessageToAllPlayers(gameIndex, dataJson);
 
         var gameInfo = TheHelpingHand.Server.games[gameIndex];
         var dataJson = {
@@ -157,6 +234,16 @@ TheHelpingHand.Game = {
             data: gameInfo
         };
         TheHelpingHand.Server.sendMessage(CLIENT_ID, dataJson);
+
+        var dataJson = {
+            topic: 'game',
+            type: 'playerJoined',
+            data: {
+                CLIENT_ID: CLIENT_ID,
+                name: currentPlayer.name
+            }
+        };
+        this.sendMessageToAllPlayers(gameIndex, dataJson);
 
         // Get the current events and push it to the player
         for (var i = 0; i < gameInfo._elements.length; i++) {

@@ -189,6 +189,11 @@ TheHelpingHand.Server = {
                     this.disconnectPlayerFromCurrentGame(CLIENT_ID);
                 }
             break;
+            case 'spell':
+              if (message.type == 'cast') {
+                  TheHelpingHand.Game.castSpell(CLIENT_ID, message.data.elementIndex, message.data.eventIndex, message.data.spellIndex);
+              }
+            break;
             // Let the player rename his name...
             case 'identify':
               if (message.data.name != null && message.data.name != '') {

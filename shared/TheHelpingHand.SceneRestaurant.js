@@ -9,10 +9,10 @@ TheHelpingHand.SceneRestaurant = function() {
     this.name = 'Restaurant';
 
     this.grid = {
-        x: 8,
-        y: 8,
-        w: 128,
-        h: 64,
+        x: 5,
+        y: 7,
+        w: 108,
+        h: 62,
         image: 'scene-restaurant-tile.png'
     };
 
@@ -32,27 +32,7 @@ TheHelpingHand.SceneRestaurant = function() {
         },
         {
             object: function() { return new TheHelpingHand.ElementTable(); },
-            grid: 4
-        },
-        {
-            object: function() { return new TheHelpingHand.ElementTable(); },
             grid: 5
-        },
-        {
-            object: function() { return new TheHelpingHand.ElementTable(); },
-            grid: 6
-        },
-        {
-            object: function() { return new TheHelpingHand.ElementTable(); },
-            grid: 7
-        },
-        {
-            object: function() { return new TheHelpingHand.ElementTable(); },
-            grid: 8
-        },
-        {
-            object: function() { return new TheHelpingHand.ElementTable(); },
-            grid: 9
         },
         {
             object: function() { return new TheHelpingHand.ElementTable(); },
@@ -60,23 +40,15 @@ TheHelpingHand.SceneRestaurant = function() {
         },
         {
             object: function() { return new TheHelpingHand.ElementTable(); },
-            grid: 11
-        },
-        {
-            object: function() { return new TheHelpingHand.ElementTable(); },
-            grid: 12
-        },
-        {
-            object: function() { return new TheHelpingHand.ElementTable(); },
-            grid: 13
-        },
-        {
-            object: function() { return new TheHelpingHand.ElementTable(); },
-            grid: 14
-        },
-        {
-            object: function() { return new TheHelpingHand.ElementTable(); },
             grid: 15
+        },
+        {
+            object: function() { return new TheHelpingHand.ElementTable(); },
+            grid: 19
+        },
+        {
+            object: function() { return new TheHelpingHand.ElementTable(); },
+            grid: 24
         }
     ];
 

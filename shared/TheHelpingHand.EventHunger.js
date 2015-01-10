@@ -9,6 +9,8 @@ TheHelpingHand.EventHunger = function() {
 
     this.icon = 'meat.png';
 
+    this.counteredBy = ['food'];
+
 };
 
 TheHelpingHand.EventHunger.prototype = Object.create( TheHelpingHand.Event.prototype );

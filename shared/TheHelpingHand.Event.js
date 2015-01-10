@@ -16,8 +16,7 @@ TheHelpingHand.Event = function() {
     /**
      * List of spell types that can counter this event
      */
-    this.countredBy = [
-    ];
+    this.counteredBy = [];
 
 };
 

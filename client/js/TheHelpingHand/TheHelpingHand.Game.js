@@ -164,6 +164,9 @@ TheHelpingHand.Game = {
             html += '<img id="spell-'+ i +'" class="spell" onclick="TheHelpingHand.Game.activateSpell('+ i +');" src="assets/icons/' + spell.icon +'" />';
         }
         html += '</div>';
+
+        html += '<div id="players" style="position: absolute;z-index:101;top: 10px;right:10px;width: 200px;font-size: 24px;color: red;">Players:<br /></div>';
+
         $('#game').innerHTML = html;
 
         $('#game').style.display = 'block';
@@ -181,7 +184,7 @@ TheHelpingHand.Game = {
             this.activeSpell = -1;
             return true;
         }
-        // 1. Check if the spell is from cooldown
+        // 1. Check if the spell is from ccooldown
         if (this.spells[spellIndex].onCooldown == true) {
             return false;
         }
@@ -212,8 +215,8 @@ TheHelpingHand.Game = {
         if (eventData.timeout > 0) {
             var Element = this.currentScene.elements[eventData.elementIndex].object();
             var Event = Element.availableEvents[eventData.eventIndex].object();
-            var html = '<div class="event" id="event-'+ eventData.elementIndex +'-'+ eventData.eventIndex +'">';
-            html += '<span class="amount">';
+            var html = '<div onclick="TheHelpingHand.Game.castSpell('+ eventData.elementIndex +', '+ eventData.eventIndex +');" class="event" id="event-'+ eventData.elementIndex +'-'+ eventData.eventIndex +'">';
+            html += '<span class="amount" id="event-amount-'+ eventData.elementIndex +'-'+ eventData.eventIndex +'">';
             if (eventData.amount > 0) {
                 html += eventData.amount;
             }
@@ -237,8 +240,51 @@ TheHelpingHand.Game = {
 
     /**
      * Cast the current active spell
+     * @param elementIndex int
+     * @param eventIndex int
      */
-    castSpell: function() {
+    castSpell: function(elementIndex, eventIndex) {
+
+        // Send request to server.
+        var jsonData = {
+            topic: 'spell',
+            type: 'cast',
+            data: {
+                elementIndex: elementIndex,
+                eventIndex: eventIndex,
+                spellIndex: this.activeSpell
+            }
+        };
+        TheHelpingHand.Client.socket.send(JSON.stringify(jsonData));
+
+        var prevAmount = $('#event-amount-'+ elementIndex +'-'+ eventIndex).innerHTML;
+        if (prevAmount.match(/[^0-9]/)) {
+            // Do nothing
+        }
+        else {
+            prevAmount--;
+            if (prevAmount <= 0) {
+                prevAmount = '<img src="assets/event-completed.png" />';
+            }
+        }
+        $('#event-amount-'+ elementIndex +'-'+ eventIndex +'').innerHTML = prevAmount;
+
+        for (var i = 0; i < $('.spell').length; i++) {
+            $('.spell')[i].className = 'spell';
+        }
+        this.activeSpell = -1;
+
+    },
+
+    updateEvent: function(elementIndex, eventIndex, amount) {
+
+        if ($('#event-amount-'+ elementIndex +'-'+ eventIndex) == null) {
+            return true;
+        }
+        if (amount <= 0) {
+            amount = '<img src="assets/event-completed.png" />';
+        }
+        $('#event-amount-'+ elementIndex +'-'+ eventIndex).innerHTML = amount;
 
     }
 

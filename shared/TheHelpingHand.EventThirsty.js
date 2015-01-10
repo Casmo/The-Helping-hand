@@ -9,6 +9,8 @@ TheHelpingHand.EventThirsty = function() {
 
     this.icon = 'drink-me.png';
 
+    this.counteredBy = ['drink'];
+
 };
 
 TheHelpingHand.EventThirsty.prototype = Object.create( TheHelpingHand.Event.prototype );

@@ -130,9 +130,27 @@ TheHelpingHand.Client = {
                 else if (data.type == 'start') {
                     TheHelpingHand.Game.start(data.data);
                 }
+              else if (data.type == 'playerJoined') {
+                    console.log(data);
+                    if ($('#players') != null) {
+                        $('#players').innerHTML += '<div id="player-'+ data.data.CLIENT_ID +'">' + data.data.name + ' (<span id="score-'+ data.data.CLIENT_ID +'">0</span>)</div>';
+                    }
+                }
+            break;
+            case 'score':
+                if (data.type == 'update') {
+                    if ($('#score-' + data.data.CLIENT_ID) != null) {
+                        $('#score-' + data.data.CLIENT_ID).innerHTML = data.data.score;
+                    }
+                }
             break;
             case 'event':
               TheHelpingHand.Game.addEvent(data.data);
+            break;
+            case 'spell':
+              if (data.type == 'update') {
+                  TheHelpingHand.Game.updateEvent(data.data.elementIndex, data.data.eventIndex, data.data.amount);
+              }
             break;
             case 'error':
               this.displayError(data.data.message);
