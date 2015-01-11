@@ -113,8 +113,6 @@ TheHelpingHand.Client = {
     parseMessage: function (data) {
 
         var data = JSON.parse(data);
-        console.log('Message received');
-        console.log(data);
         if (data.topic == null) {
             console.warn('Topic not set');
             return false;
@@ -131,7 +129,6 @@ TheHelpingHand.Client = {
                     TheHelpingHand.Game.start(data.data);
                 }
               else if (data.type == 'playerJoined') {
-                    console.log(data);
                     if ($('#players') != null) {
                         $('#players').innerHTML += '<div id="player-'+ data.data.CLIENT_ID +'">' + data.data.name + ' (<span id="score-'+ data.data.CLIENT_ID +'">0</span>)</div>';
                     }

@@ -244,6 +244,20 @@ TheHelpingHand.Game = {
             }
         };
         this.sendMessageToAllPlayers(gameIndex, dataJson);
+        for (var i = 0; i < gameInfo.players.length; i++) {
+            if (gameInfo.players[i].CLIENT_ID == null || gameInfo.players[i].CLIENT_ID == CLIENT_ID) {
+                continue;
+            }
+            var dataJson = {
+                topic: 'game',
+                type: 'playerJoined',
+                data: {
+                    CLIENT_ID: gameInfo.players[i].CLIENT_ID,
+                    name: gameInfo.players[i].name
+                }
+            };
+            TheHelpingHand.Server.sendMessage(CLIENT_ID, dataJson);
+        }
 
         // Get the current events and push it to the player
         for (var i = 0; i < gameInfo._elements.length; i++) {
